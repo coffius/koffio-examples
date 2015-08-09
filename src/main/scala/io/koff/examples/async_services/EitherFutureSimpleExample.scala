@@ -170,22 +170,6 @@ object EitherFutureSimpleExample extends App {
     result.run
   }
 
-//  def doFailFastHandling(): FutureActionResult[String] = {
-//    val futureResult1 = doSuccessAction1()
-//    val failedAction  = doShortFailedAction()
-//    val futureResult3 = doSuccessAction3()
-//
-//    val fRT1  = eitherT(futureResult1)
-//    val faT   = eitherT(failedAction)
-//    val RT3   = eitherT(futureResult3)
-//
-//    for {
-//
-//    }
-//
-//    val result = fRT1 ||| faT ||| RT3
-//  }
-
   //print result of calculation
   val futResult = doFailedAction().map{
     case ActionSuccess(value) => println("success value: " + value)
