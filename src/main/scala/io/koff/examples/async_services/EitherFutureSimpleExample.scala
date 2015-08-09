@@ -108,6 +108,31 @@ object EitherFutureSimpleExample extends App {
     monadResult.run
   }
 
+  /**
+   * Example of ugly for-comprehension
+   */
+  def doUglyComplexAction(): FutureActionResult[String] = {
+    //start execution in parallel
+    val futureResult1 = doSuccessAction1()
+    val futureResult2 = doSuccessAction2()
+    val futureResult3 = doSuccessAction3()
+
+    for{
+      eitherResult1 <- futureResult1
+      eitherResult2 <- futureResult2
+      eitherResult3 <- futureResult3
+    } yield {
+      for {
+        result1 <- eitherResult1
+        result2 <- eitherResult2
+        result3 <- eitherResult3
+      } yield {
+        // if all operations complete successfully we will concatenate string
+        result1.value + " " + result2.value + " " + result3.value
+      }
+    }
+  }
+
   //print result of calculation
   val futResult = doSuccessfulComplexAction().map{
     case ActionSuccess(value) => println("success value: " + value)
