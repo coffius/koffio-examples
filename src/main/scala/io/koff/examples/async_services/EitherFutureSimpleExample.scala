@@ -60,6 +60,7 @@ object EitherFutureSimpleExample extends App {
   def doSuccessAction1(): FutureActionResult[Outcome] = {
     Future {
       Thread.sleep(5000)
+      println("success-action#1 is completed")
       ActionSuccess(Outcome("success#first"))
     }
   }
@@ -70,6 +71,7 @@ object EitherFutureSimpleExample extends App {
   def doSuccessAction2(): FutureActionResult[Outcome] = {
     Future {
       Thread.sleep(10000)
+      println("success-action#2 is completed")
       ActionSuccess(Outcome("success#second"))
     }
   }
@@ -80,13 +82,30 @@ object EitherFutureSimpleExample extends App {
   def doSuccessAction3(): FutureActionResult[Outcome] = {
     Future {
       Thread.sleep(15000)
+      println("success-action#3 is completed")
       ActionSuccess(Outcome("success#third"))
     }
   }
 
+  def doShortFailedAction(): FutureActionResult[Outcome] = {
+    Future {
+      println("short failed action is completed")
+      ActionFailure("failed#short")
+    }
+  }
+
+  def doLongFailedAction(): FutureActionResult[Outcome] = {
+    Future {
+      println("long failed action is completed")
+      Thread.sleep(7000)
+      ActionSuccess(Outcome("failed#long"))
+    }
+  }
+
+
   /**
    * Complex action which should execute successfully.
-   * This is the example of the complex operation which needs additional data for completion of calculation.
+   * This is the example of the complex operation which needs additional data for completion of caltculation.
    * This action requests needed data in parallel.
    */
   def doSuccessfulComplexAction(): FutureActionResult[String] = {
@@ -95,7 +114,7 @@ object EitherFutureSimpleExample extends App {
     val futureResult2 = doSuccessAction2()
     val futureResult3 = doSuccessAction3()
 
-    val monadResult = for {
+    val result = for {
       result1 <- eitherT(futureResult1)
       result2 <- eitherT(futureResult2)
       result3 <- eitherT(futureResult3)
@@ -105,7 +124,7 @@ object EitherFutureSimpleExample extends App {
     }
 
     //return final result
-    monadResult.run
+    result.run
   }
 
   /**
@@ -133,8 +152,42 @@ object EitherFutureSimpleExample extends App {
     }
   }
 
+  def doFailedAction(): FutureActionResult[String] = {
+    val futureResult1 = doSuccessAction1()
+    val failedAction  = doShortFailedAction()
+    val futureResult3 = doSuccessAction3()
+
+    val result = for {
+      result1 <- eitherT(futureResult1)
+      failed  <- eitherT(failedAction)
+      result3 <- eitherT(futureResult3)
+    } yield {
+      // if all operations complete successfully we will concatenate string
+      result1.value + " " + failed.value + " " + result3.value
+    }
+
+    //return final result
+    result.run
+  }
+
+//  def doFailFastHandling(): FutureActionResult[String] = {
+//    val futureResult1 = doSuccessAction1()
+//    val failedAction  = doShortFailedAction()
+//    val futureResult3 = doSuccessAction3()
+//
+//    val fRT1  = eitherT(futureResult1)
+//    val faT   = eitherT(failedAction)
+//    val RT3   = eitherT(futureResult3)
+//
+//    for {
+//
+//    }
+//
+//    val result = fRT1 ||| faT ||| RT3
+//  }
+
   //print result of calculation
-  val futResult = doSuccessfulComplexAction().map{
+  val futResult = doFailedAction().map{
     case ActionSuccess(value) => println("success value: " + value)
     case ActionFailure(error) => println("err value: " + error)
   }
