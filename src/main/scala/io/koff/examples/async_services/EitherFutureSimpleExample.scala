@@ -42,6 +42,7 @@ object EitherFutureSimpleExample extends App {
    */
   case class Outcome(value: String)
 
+  //define Monad[Future] for work with future`s monad transformer
   implicit val FutureMonad = new Monad[Future] {
     def point[A](a: => A): Future[A] = Future(a)
     def bind[A, B](fa: Future[A])(f: (A) => Future[B]): Future[B] = fa flatMap f
