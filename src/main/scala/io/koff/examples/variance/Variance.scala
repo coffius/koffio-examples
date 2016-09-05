@@ -8,7 +8,7 @@ object Variance {
   class Child2 extends Parent
 
   //Three types of variance in scala
-  //InVariant means that there is no relations between InVariant[Parent] and InVariant[Child1] or InVariant[Child2]
+  //InVariant means that there is no relation between InVariant[Parent] and InVariant[Child1] or InVariant[Child2]
   class InVariant[T]
   //CoVariant means that CoVariant[Child1] and CoVariant[Child2] are subclasses of CoVariant[Parent]
   class CoVariant[+T]
@@ -17,7 +17,7 @@ object Variance {
 
   def inVariantExample() = {
     val parentInvariant = new InVariant[Parent]
-    // Next lines don`t compile
+    // Next lines cannot be compiled
     //val child1Invariant: InVariant[Child1] = parentInvariant
     //val child2Invariant: InVariant[Child2] = parentInvariant
   }
@@ -35,5 +35,20 @@ object Variance {
     //Looks awkward but it is totally legit :)
     val child1Contravariant: ContraVariant[Child1] = parentContravariant
     val child2Contravariant: ContraVariant[Child2] = parentContravariant
+  }
+
+  def correctUsageOfCovariance() = {
+    class Producer[+A](val value: A) {
+      private[this] var variable: A = ???
+      def simpleProduce(): A = ???
+      def complexProduce[B >: A](b: B): A = ???
+    }
+  }
+
+  def incorrectUsageOfCovarience() = {
+    //code below cannot be compiled
+    //class Producer[+A](var variable: A) {
+    //  def consume(a: A): Unit = ???
+    //}
   }
 }
