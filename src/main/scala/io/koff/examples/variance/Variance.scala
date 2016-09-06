@@ -51,4 +51,19 @@ object Variance {
     //  def consume(a: A): Unit = ???
     //}
   }
+
+  def correctUsageOfContravarience() = {
+    class Consumer[-A]() {
+      private[this] var variable: A = ???
+      def consume(a: A): Unit = ???
+    }
+  }
+
+  def incorrectUsageOfContravarience() = {
+    //code below cannot be compiled
+    //class Producer[-A](val value: A, var variable: A) {
+    //  def produce(): A = ???
+    //  def complexProduce[B >: A](b: B): A = ???
+    //}
+  }
 }
