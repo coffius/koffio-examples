@@ -38,32 +38,37 @@ object Variance {
   }
 
   def correctUsageOfCovariance() = {
-    class Producer[+A](val value: A) {
-      private[this] var variable: A = ???
-      def simpleProduce(): A = ???
-      def complexProduce[B >: A](b: B): A = ???
+    //we can use a covariant type as
+    class Producer[+A](val value: A) {          // a type for immutable values
+      private[this] var variable: A = ???       // a type for private mutable variables
+      def simpleProduce(): A = ???              // a type for method outputs
+      def complexProduce[B >: A](b: B): A = ??? // a lower type bound
     }
   }
 
   def incorrectUsageOfCovarience() = {
     //code below cannot be compiled
-    //class Producer[+A](var variable: A) {
-    //  def consume(a: A): Unit = ???
+    //we can not use a covariant type as
+    //class Producer[+A](var variable: A) { // a type for public mutable variables
+    //  def consume(a: A): Unit = ???       // a type for method parameters
     //}
   }
 
   def correctUsageOfContravarience() = {
+    //we can use a contravariant type as
     class Consumer[-A]() {
-      private[this] var variable: A = ???
-      def consume(a: A): Unit = ???
+      private[this] var variable: A = ???   // a type for private mutable variables
+      def consume(a: A): Unit = ???         // a type for method parameters
+      def complex[B <: A](b: B): Unit = ??? // a upper type bound
     }
   }
 
   def incorrectUsageOfContravarience() = {
     //code below cannot be compiled
-    //class Producer[-A](val value: A, var variable: A) {
-    //  def produce(): A = ???
-    //  def complexProduce[B >: A](b: B): A = ???
+    //we can not use a contravariant type as
+    //class Producer[-A](val value: A, var variable: A) { // a type for public immutable values and publis mutable variables
+    //  def produce(): A = ???                            // a type for for method outputs
+    //  def complexProduce[B >: A](b: B): A = ???         // a type for lower
     //}
   }
 }
