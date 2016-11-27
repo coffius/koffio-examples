@@ -34,8 +34,8 @@ object HandlingEventsExample {
     handlerRegister.handleEvent(ChangeUserPhoneEvent(
       userId = UUID.randomUUID(),
       userEmail = "test@example.com",
-      oldPhone = "+39998887766",
-      newPhone = "+39998887766"
+      oldPhone = "+79998887766",
+      newPhone = "+318745846985"
     ))
   }
 }
